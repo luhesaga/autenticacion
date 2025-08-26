@@ -11,6 +11,17 @@ spring:
       path: "/h2"
   profiles:
     include: null
+  r2dbc:
+    # URL de conexión R2DBC para PostgreSQL
+    #url: r2dbc:postgresql://localhost:5432/autenticacion_db
+    host: localhost
+    port: 5432
+    database: autenticacion_db
+    schema: public
+    username: postgres
+    password: App$2025
+    pool:
+      enabled: true
 management:
   endpoints:
     web:
@@ -20,5 +31,11 @@ management:
     health:
       probes:
         enabled: true
+logging:
+  level:
+    root: INFO
+    co.com.crediya.autenticacion: TRACE
+    org.springframework.r2dbc: DEBUG
+    io.r2dbc.postgresql: DEBUG
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"

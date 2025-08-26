@@ -1,20 +1,19 @@
-package co.com.crediya.autenticacion.model.usuario;
-import lombok.Builder;
-import lombok.Data;
+package co.com.crediya.autenticacion.api.dto;
+
 import lombok.AllArgsConstructor;
-// import lombok.NoArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
-@Builder(toBuilder = true)
-public class Usuario {
-    private Long idUsuario; // Llave primaria (PK)
+public class UsuarioDTO {
+    // No incluimos el id, ya que lo genera la base de datos.
     private String nombre;
     private String apellido;
-    private String email; // Debe ser único
+    private String email;
     private String documentoIdentidad;
     private String telefono;
     private String direccion;
