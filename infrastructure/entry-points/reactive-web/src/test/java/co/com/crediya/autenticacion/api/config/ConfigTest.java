@@ -1,7 +1,7 @@
 package co.com.crediya.autenticacion.api.config;
 
-import co.com.crediya.autenticacion.api.Handler;
-import co.com.crediya.autenticacion.api.RouterRest;
+import co.com.crediya.autenticacion.api.ApiRest;
+import co.com.crediya.autenticacion.api.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@ContextConfiguration(classes = {RouterRest.class, Handler.class})
+@ContextConfiguration(classes = {ApiRest.class, GlobalExceptionHandler.class})
 @WebFluxTest
 @Import({CorsConfig.class, SecurityHeadersConfig.class})
 class ConfigTest {

@@ -1,6 +1,5 @@
 package co.com.crediya.autenticacion.r2dbc.config;
 
-// TODO: Load properties from the application.yaml file or from secrets manager
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 

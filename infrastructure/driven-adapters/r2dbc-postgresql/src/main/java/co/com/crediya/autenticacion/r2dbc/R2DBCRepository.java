@@ -8,4 +8,5 @@ import reactor.core.publisher.Mono;
 public interface R2DBCRepository extends R2dbcRepository<UsuarioData, Long> {
     // Spring Data implementará este método automáticamente por su nombre
     Mono<UsuarioData> findByEmail(String email);
+    Mono<UsuarioData> findByDocumentoIdentidad(String documentoIdentidad);
 }

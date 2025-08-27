@@ -18,4 +18,11 @@ public interface UsuarioRepository {
      * @return Retorna un Mono que puede contener el Usuario si se encuentra, o estar vacío.
      */
     Mono<Usuario> findByEmail(String email);
+
+    /**
+     * Busca un usuario por su documento de identidad para validar si ya existe.
+     * @param documentoIdentidad El documento a buscar.
+     * @return Retorna un Mono que puede contener el Usuario si se encuentra, o estar vacío.
+     */
+    Mono<Usuario> findByDocumentoIdentidad(String documentoIdentidad);
 }

@@ -75,4 +75,19 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
                 })
                 .doOnError(e -> log.warn("[R2DBCRepositoryAdapter] Error buscando email {}: {}", email, e.getMessage(), e));
     }
+
+    @Override
+    public Mono<Usuario> findByDocumentoIdentidad(String documentoIdentidad) {
+        log.trace("[R2DBCRepositoryAdapter] Buscando usuario por documento={}", documentoIdentidad);
+        return r2dbcRepository.findByDocumentoIdentidad(documentoIdentidad) // Llama al método del repo de Spring
+                .map(this::toModel) // Convierte el resultado al modelo de dominio
+                .doOnSuccess(u -> {
+                    if (u != null) {
+                        log.debug("[R2DBCRepositoryAdapter] Usuario encontrado id={}, documento={}", u.getIdUsuario(), documentoIdentidad);
+                    } else {
+                        log.debug("[R2DBCRepositoryAdapter] No se encontró usuario con documento={}", documentoIdentidad);
+                    }
+                })
+                .doOnError(e -> log.warn("[R2DBCRepositoryAdapter] Error buscando documento {}: {}", documentoIdentidad, e.getMessage(), e));
+    }
 }

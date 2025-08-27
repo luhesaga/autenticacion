@@ -2,13 +2,13 @@ package co.com.crediya.autenticacion.model.usuario;
 import lombok.Builder;
 import lombok.Data;
 import lombok.AllArgsConstructor;
-// import lombok.NoArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
-//@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder(toBuilder = true)
 public class Usuario {
     private Long idUsuario; // Llave primaria (PK)
