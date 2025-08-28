@@ -4,12 +4,12 @@ import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.time.Duration;
+import java.util.Objects;
 
 @Configuration
 @EnableConfigurationProperties(PostgresqlConnectionProperties.class)
@@ -20,30 +20,16 @@ public class PostgreSQLConnectionPool {
     public static final int MAX_IDLE_TIME = 30;
     public static final int DEFAULT_PORT = 5432;
 
-    @Value("${spring.r2dbc.host}")
-    private String host;
+    @Bean
+    public ConnectionPool getConnectionConfig(PostgresqlConnectionProperties properties) {
+        PostgresqlConnectionConfiguration.Builder builder = PostgresqlConnectionConfiguration.builder()
+                .host(Objects.requireNonNull(properties.host(), "host must not be null"))
+                .port(properties.port() != null ? properties.port() : DEFAULT_PORT)
+                .database(Objects.requireNonNull(properties.database(), "database must not be null"))
+                .username(Objects.requireNonNull(properties.username(), "username must not be null"))
+                .password(Objects.requireNonNull(properties.password(), "password must not be null"));
 
-    @Value("${spring.r2dbc.port}")
-    private int port;
-
-    @Value("${spring.r2dbc.database}")
-    private String database;
-
-    @Value("${spring.r2dbc.username}")
-    private String username;
-
-    @Value("${spring.r2dbc.password}")
-    private String password;
-
-	@Bean
-	public ConnectionPool getConnectionConfig(PostgresqlConnectionProperties properties) {
-		PostgresqlConnectionConfiguration dbConfiguration = PostgresqlConnectionConfiguration.builder()
-                .host(host)
-                .port(port)
-                .database(database)
-                .username(username)
-                .password(password)
-                .build();
+        PostgresqlConnectionConfiguration dbConfiguration = builder.build();
 
         ConnectionPoolConfiguration poolConfiguration = ConnectionPoolConfiguration.builder()
                 .connectionFactory(new PostgresqlConnectionFactory(dbConfiguration))
@@ -54,6 +40,6 @@ public class PostgreSQLConnectionPool {
                 .validationQuery("SELECT 1")
                 .build();
 
-		return new ConnectionPool(poolConfiguration);
-	}
+        return new ConnectionPool(poolConfiguration);
+    }
 }

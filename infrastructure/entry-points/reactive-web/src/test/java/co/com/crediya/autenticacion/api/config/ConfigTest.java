@@ -1,18 +1,29 @@
 package co.com.crediya.autenticacion.api.config;
 
-import co.com.crediya.autenticacion.api.ApiRest;
 import co.com.crediya.autenticacion.api.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@ContextConfiguration(classes = {ApiRest.class, GlobalExceptionHandler.class})
+@ContextConfiguration(classes = {ConfigTest.TestController.class, GlobalExceptionHandler.class})
 @WebFluxTest
 @Import({CorsConfig.class, SecurityHeadersConfig.class})
+@TestPropertySource(properties = {
+        "cors.allowed-origins=http://localhost"
+})
 class ConfigTest {
+
+    @RestController
+    static class TestController {
+        @GetMapping("/api/usecase/path")
+        public String ok() { return ""; }
+    }
 
     @Autowired
     private WebTestClient webTestClient;

@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-@ConfigurationProperties(prefix = "adapters.r2dbc")
+@ConfigurationProperties(prefix = "spring.r2dbc")
 public record PostgresqlConnectionProperties(
         String host,
         Integer port,
