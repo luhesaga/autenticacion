@@ -1,47 +1,133 @@
-# Proyecto Base Implementando Clean Architecture
+# Microservicio de Autenticación - CrediYa
 
-## Antes de Iniciar
+Este microservicio es el encargado de gestionar todos los procesos de autenticación y administración de usuarios para la plataforma **CrediYa**. Implementado como parte de un sistema de microservicios, sigue los principios de la **Arquitectura Limpia (Hexagonal)** para asegurar un bajo acoplamiento, alta cohesión y facilidad de mantenimiento.
 
-Empezaremos por explicar los diferentes componentes del proyectos y partiremos de los componentes externos, continuando con los componentes core de negocio (dominio) y por último el inicio y configuración de la aplicación.
+## Historia de Usuario Implementada (HU1): Registro de Usuarios
 
-Lee el artículo [Clean Architecture — Aislando los detalles](https://medium.com/bancolombia-tech/clean-architecture-aislando-los-detalles-4f9530f35d7a)
+La funcionalidad principal desarrollada hasta ahora es el **registro de nuevos usuarios en el sistema**.
 
-# Arquitectura
+**Funcionalidades Clave:**
+* Exposición de un endpoint `POST` para la creación de usuarios.
+* Recepción de datos personales y de salario del nuevo usuario.
+* Validación de la información de entrada, incluyendo:
+    * Campos obligatorios (nombre, apellido, email).
+    * Formato de datos (email, rangos numéricos).
+    * Reglas de negocio (unicidad de email y documento de identidad).
+* Persistencia del nuevo usuario en la base de datos.
+* Manejo de errores controlado y consistente para el cliente de la API.
 
-![Clean Architecture](https://miro.medium.com/max/1400/1*ZdlHz8B0-qu9Y-QO3AXR_w.png)
+---
 
-## Domain
+## ?? Arquitectura y Tecnologías
 
-Es el módulo más interno de la arquitectura, pertenece a la capa del dominio y encapsula la lógica y reglas del negocio mediante modelos y entidades del dominio.
+* **Arquitectura**: Limpia / Hexagonal, siguiendo el scaffold de Bancolombia.
+* **Lenguaje**: Java 17
+* **Framework**: Spring Boot 3 con WebFlux (Programación Reactiva)
+* **Base de Datos**: PostgreSQL
+* **Capa de Persistencia**: R2DBC (Reactiva)
+* **Gestor de Dependencias**: Gradle
 
-## Usecases
+---
 
-Este módulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lógica de aplicación y reacciona a las invocaciones desde el módulo de entry points, orquestando los flujos hacia el módulo de entities.
+## ? Estructura del Proyecto
 
-## Infrastructure
+El proyecto está organizado en módulos, separando claramente las responsabilidades:
 
-### Helpers
+* `applications/app-service`: Módulo principal que ensambla y ejecuta la aplicación.
+* `domain/model`: Contiene las entidades de negocio (`Usuario.java`) y los contratos o puertos (`UsuarioRepository.java`). Es el corazón del software.
+* `domain/usecase`: Orquesta la lógica de negocio (`UsuarioUseCase.java`).
+* `infrastructure/entry-points/api-rest`: Implementa la capa de entrada, en este caso, el controlador REST (`ApiRest.java`) que expone la API.
+* `infrastructure/driven-adapters/r2dbc-postgresql`: Implementa la comunicación con la base de datos (el "adaptador de salida").
 
-En el apartado de helpers tendremos utilidades generales para los Driven Adapters y Entry Points.
+---
 
-Estas utilidades no están arraigadas a objetos concretos, se realiza el uso de generics para modelar comportamientos
-genéricos de los diferentes objetos de persistencia que puedan existir, este tipo de implementaciones se realizan
-basadas en el patrón de diseño [Unit of Work y Repository](https://medium.com/@krzychukosobudzki/repository-design-pattern-bc490b256006)
+## ? Cómo Ejecutar el Proyecto
 
-Estas clases no puede existir solas y debe heredarse su compartimiento en los **Driven Adapters**
+### Pre-requisitos
+* JDK 17 o superior.
+* Gradle 7.x o superior.
+* Tener una instancia de PostgreSQL corriendo (se recomienda usar Docker).
 
-### Driven Adapters
+### Configuración
+1.  Clona el repositorio.
+2.  Navega al archivo `applications/app-service/src/main/resources/application.yml`.
+3.  Asegúrate de que las propiedades de la base de datos coincidan con tu configuración local. El prefijo usado es `adapters.r2dbc`:
+    ```yaml
+    adapters:
+      r2dbc:
+        host: localhost
+        port: 5432
+        database: crediyadb
+        schema: public
+        username: tu_usuario
+        password: tu_contraseña
+    ```
 
-Los driven adapter representan implementaciones externas a nuestro sistema, como lo son conexiones a servicios rest,
-soap, bases de datos, lectura de archivos planos, y en concreto cualquier origen y fuente de datos con la que debamos
-interactuar.
+### Ejecución
+Abre una terminal en la raíz del proyecto y ejecuta el siguiente comando Gradle:
 
-### Entry Points
+```bash
+./gradlew bootRun
+```
+El servicio estará disponible en `http://localhost:8080`.
 
-Los entry points representan los puntos de entrada de la aplicación o el inicio de los flujos de negocio.
+---
 
-## Application
+## ? Endpoints de la API (HU1)
 
-Este módulo es el más externo de la arquitectura, es el encargado de ensamblar los distintos módulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automática, inyectando en éstos instancias concretas de las dependencias declaradas. Además inicia la aplicación (es el único módulo del proyecto donde encontraremos la función “public static void main(String[] args)”.
+### Registrar un Nuevo Usuario
+* **Método:** `POST`
+* **URL:** `/api/v1/usuarios`
+* **Descripción:** Crea un nuevo usuario en el sistema.
 
-**Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
+**Ejemplo de Request Body:**
+```json
+{
+  "nombre": "Ana",
+  "apellido": "García",
+  "email": "ana.garcia@test.com",
+  "documentoIdentidad": "12345678",
+  "telefono": "3001234567",
+  "direccion": "Calle Falsa 123",
+  "fechaNacimiento": "1990-05-15",
+  "idRol": 1,
+  "salarioBase": 5000000
+}
+```
+
+**Respuesta Exitosa (201 CREATED):**
+```json
+{
+    "idUsuario": 1,
+    "nombre": "Ana",
+    "apellido": "García",
+    "email": "ana.garcia@test.com",
+    // ... resto de campos
+}
+```
+
+**Respuesta de Error (400 BAD REQUEST):**
+```json
+{
+    "message": "El correo electronico ya esta registrado."
+}
+```
+
+### Documentación Interactiva (Swagger)
+Una vez que la aplicación esté corriendo, puedes acceder a la documentación interactiva de la API para ver todos los detalles y probar los endpoints directamente desde tu navegador.
+
+* **URL de Swagger UI:** [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
+---
+
+## ? Calidad de Código
+
+### Pruebas
+El proyecto está configurado con pruebas unitarias para la lógica de negocio, alcanzando una **cobertura superior al 90%** en los casos de uso. Para ejecutar todas las pruebas, usa el comando:
+
+```bash
+./gradlew test
+```
+
+### Análisis Estático de Código
+Se recomienda el uso del plugin **SonarLint** en el IDE (IntelliJ IDEA) para la validación y mejora continua de la calidad del código en tiempo de desarrollo.

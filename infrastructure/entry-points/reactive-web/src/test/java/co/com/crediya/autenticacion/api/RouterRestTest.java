@@ -1,5 +1,6 @@
 package co.com.crediya.autenticacion.api;
 
+import co.com.crediya.autenticacion.api.handler.GlobalExceptionHandler;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,26 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@ContextConfiguration(classes = {RouterRest.class, Handler.class})
+@ContextConfiguration(classes = {RouterRestTest.TestController.class, GlobalExceptionHandler.class})
 @WebFluxTest
 class RouterRestTest {
+
+    @RestController
+    static class TestController {
+        @GetMapping("/api/usecase/path")
+        public String getUseCase() { return ""; }
+
+        @GetMapping("/api/otherusercase/path")
+        public String getOtherUseCase() { return ""; }
+
+        @PostMapping("/api/usecase/otherpath")
+        public String postUseCase(@RequestBody(required = false) String body) { return ""; }
+    }
 
     @Autowired
     private WebTestClient webTestClient;
