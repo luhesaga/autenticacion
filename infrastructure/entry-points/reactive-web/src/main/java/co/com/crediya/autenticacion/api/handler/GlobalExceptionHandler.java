@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
      * Estas son las excepciones que lanzamos a propósito desde el UseCase.
      */
     @ExceptionHandler(BusinessValidationException.class)
-    public ResponseEntity<ErrorDTO> handleBusinessValidationException(BusinessValidationException ex) { // Cambiado el tipo de excepción
+    public ResponseEntity<ErrorDTO> handleBusinessValidationException(BusinessValidationException ex) {
         logger.warn("Excepción de negocio: {}", ex.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

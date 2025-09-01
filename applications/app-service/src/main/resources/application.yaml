@@ -39,3 +39,7 @@ logging:
     io.r2dbc.postgresql: DEBUG
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+jwt:
+  secret: EsteEsUnSecretoSuperLargoYComplejoParaMiAplicacionCrediYaNoCompartir
+  expiration:
+    ms: 86400000 # 24 horas

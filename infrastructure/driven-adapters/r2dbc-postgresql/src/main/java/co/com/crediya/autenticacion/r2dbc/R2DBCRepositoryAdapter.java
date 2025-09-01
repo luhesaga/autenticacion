@@ -24,6 +24,7 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
                 .nombre(data.getNombre())
                 .apellido(data.getApellido())
                 .email(data.getEmail())
+                .password(data.getPassword())
                 .documentoIdentidad(data.getDocumentoIdentidad())
                 .telefono(data.getTelefono())
                 .direccion(data.getDireccion())
@@ -39,6 +40,7 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
         data.setNombre(model.getNombre());
         data.setApellido(model.getApellido());
         data.setEmail(model.getEmail());
+        data.setPassword(model.getPassword());
         data.setDocumentoIdentidad(model.getDocumentoIdentidad());
         data.setTelefono(model.getTelefono());
         data.setDireccion(model.getDireccion());

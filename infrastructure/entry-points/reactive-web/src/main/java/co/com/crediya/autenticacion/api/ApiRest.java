@@ -1,7 +1,10 @@
 package co.com.crediya.autenticacion.api;
 
 import co.com.crediya.autenticacion.api.dto.ErrorDTO;
+import co.com.crediya.autenticacion.api.dto.LoginRequestDTO;
+import co.com.crediya.autenticacion.api.dto.LoginResponseDTO;
 import co.com.crediya.autenticacion.api.dto.UsuarioDTO;
+import co.com.crediya.autenticacion.api.jwt.JwtProvider;
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.usecase.usuario.UsuarioUseCase;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +16,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -22,6 +29,8 @@ import reactor.core.publisher.Mono;
 @Tag(name = "Gestion de Usuarios", description = "Operaciones para crear y administrar usuarios.")
 public class ApiRest {
     private final UsuarioUseCase usuarioUseCase;
+    private final ReactiveAuthenticationManager authenticationManager; // Inyectar
+    private final JwtProvider jwtProvider; // Inyectar
 
     // Mapeador simple para convertir DTO a Modelo
     private Usuario toModel(UsuarioDTO dto) {
@@ -29,6 +38,7 @@ public class ApiRest {
                 .nombre(dto.getNombre())
                 .apellido(dto.getApellido())
                 .email(dto.getEmail())
+                .password(dto.getPassword())
                 .documentoIdentidad(dto.getDocumentoIdentidad())
                 .telefono(dto.getTelefono())
                 .direccion(dto.getDireccion())
@@ -52,5 +62,16 @@ public class ApiRest {
         return Mono.just(usuarioDTO)
                 .map(this::toModel) // 1. Convierte el DTO recibido al modelo de dominio
                 .flatMap(usuarioUseCase::registrarUsuario); // 2. Llama al caso de uso
+    }
+
+    @PostMapping(path = "/login")
+    @Operation(summary = "Autenticar usuario y obtener token JWT")
+    public Mono<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequest) {
+        Authentication authenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password());
+
+        return authenticationManager.authenticate(authenticationToken)
+                .map(jwtProvider::generateToken)
+                .map(LoginResponseDTO::new)
+                .onErrorMap(e -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Credenciales incorrectas"));
     }
 }
