@@ -21,5 +21,6 @@ public class Usuario {
     private String direccion;
     private LocalDate fechaNacimiento;
     private Long idRol;
+    private String nombreRol;
     private double salarioBase;
 }

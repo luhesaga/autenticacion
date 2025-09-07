@@ -17,11 +17,6 @@ public class UsuarioUseCase {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncryptionGateway passwordEncryptionGateway; // Usar la interfaz del dominio
 
-    // Expresión regular para una validación básica de email.
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
-    );
-
     /**
      * Lógica de negocio para registrar un nuevo usuario.
      * @param usuario El usuario a registrar.
@@ -53,7 +48,7 @@ public class UsuarioUseCase {
 
     private Mono<Usuario> validarFormatoDatos(Usuario usuario) {
         // Validación del formato del email
-        if (!EMAIL_PATTERN.matcher(usuario.getEmail()).matches()) {
+        if (!Constants.EMAIL_PATTERN.matcher(usuario.getEmail()).matches()) {
             return Mono.error(new BusinessValidationException(Constants.ERROR_FORMATO_EMAIL_INVALIDO));
         }
         // Validación del rango del salario

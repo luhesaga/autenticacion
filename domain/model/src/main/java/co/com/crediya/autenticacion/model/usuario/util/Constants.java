@@ -22,4 +22,10 @@ public final class Constants {
     public static final double SALARIO_MAXIMO = 15_000_000.0;
     public static final Pattern PASSWORD_COMPLEXITY_PATTERN =
             Pattern.compile("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$");
-    public static final int PASSWORD_MIN_LENGTH = 8;}
+    public static final int PASSWORD_MIN_LENGTH = 8;
+    // Expresión regular para una validación básica de email.
+    public static final Pattern EMAIL_PATTERN = Pattern.compile(
+            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
+    );
+
+}
