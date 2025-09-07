@@ -1,51 +1,44 @@
 package co.com.crediya.autenticacion.config;
 
+import co.com.crediya.autenticacion.model.usuario.gateways.PasswordEncryptionGateway;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
+import co.com.crediya.autenticacion.usecase.usuario.UsuarioUseCase;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = UseCasesConfig.class)
+@Import(UseCasesConfigTest.TestConfig.class)
 public class UseCasesConfigTest {
 
-    @Test
-    void testUseCaseBeansExist() {
-        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TestConfig.class)) {
-            String[] beanNames = context.getBeanDefinitionNames();
+    @Autowired
+    private UsuarioUseCase usuarioUseCase;
 
-            boolean useCaseBeanFound = false;
-            for (String beanName : beanNames) {
-                if (beanName.endsWith("UseCase")) {
-                    useCaseBeanFound = true;
-                    break;
-                }
-            }
-
-            assertTrue(useCaseBeanFound, "No beans ending with 'Use Case' were found");
-        }
-    }
-
-    @Configuration
-    @Import(UseCasesConfig.class)
+    @TestConfiguration
     static class TestConfig {
-
-        @Bean
-        public MyUseCase myUseCase() {
-            return new MyUseCase();
-        }
 
         @Bean
         public UsuarioRepository usuarioRepository() {
             return Mockito.mock(UsuarioRepository.class);
         }
+
+        @Bean
+        public PasswordEncryptionGateway passwordEncryptionGateway() {
+            return Mockito.mock(PasswordEncryptionGateway.class);
+        }
     }
 
-    static class MyUseCase {
-        public String execute() {
-            return "MyUseCase Test";
-        }
+    @Test
+    void testUseCaseBeansExist() {
+        assertNotNull(usuarioUseCase, "El bean usuarioUseCase no debería ser nulo");
     }
 }

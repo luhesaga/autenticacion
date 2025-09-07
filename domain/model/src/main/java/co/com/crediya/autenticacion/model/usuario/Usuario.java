@@ -15,10 +15,12 @@ public class Usuario {
     private String nombre;
     private String apellido;
     private String email; // Debe ser único
+    private String password;
     private String documentoIdentidad;
     private String telefono;
     private String direccion;
     private LocalDate fechaNacimiento;
     private Long idRol;
+    private String nombreRol;
     private double salarioBase;
 }

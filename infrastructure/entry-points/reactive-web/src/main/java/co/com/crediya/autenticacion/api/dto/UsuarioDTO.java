@@ -19,6 +19,8 @@ public class UsuarioDTO {
     private String apellido;
     @Schema(description = "Correo electrónico único del usuario.", example = "juan.perez@example.com")
     private String email;
+    @Schema(description = "Contraseña del usuario, al menos 8 caracteres, al menos una mayúscula y un numero", example = "Contraseña2509e")
+    private String password;
     @Schema(description = "Documento de identidad del usuario.", example = "1140888999")
     private String documentoIdentidad;
     @Schema(description = "Número de teléfono de contacto.", example = "3012345678")

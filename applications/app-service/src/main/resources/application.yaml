@@ -37,5 +37,14 @@ logging:
     co.com.crediya.autenticacion: TRACE
     org.springframework.r2dbc: DEBUG
     io.r2dbc.postgresql: DEBUG
+#security:
+#  oauth2:
+#    resourceserver:
+#      jwt:
+#        jwk-set-uri: http://localhost:8080/oauth2/jwks
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
+jwt:
+  secret: EsteEsUnSecretoSuperLargoYComplejoParaMiAplicacionCrediYaNoCompartir
+  expiration:
+    ms: 86400000 # 24 horas

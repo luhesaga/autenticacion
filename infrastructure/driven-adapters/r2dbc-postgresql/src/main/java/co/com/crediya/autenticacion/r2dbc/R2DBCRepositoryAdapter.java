@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor // Inyecta las dependencias finales
 @Slf4j
 public class R2DBCRepositoryAdapter implements UsuarioRepository {
-    private final R2DBCRepository r2dbcRepository; // Repositorio de Spring Data
+    private final UsuarioDataRepository usuarioDataRepository; // Repositorio de Spring Data
     private final ReactiveTransactionManager transactionManager;
 
     // Mapeador simple.
@@ -24,11 +24,13 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
                 .nombre(data.getNombre())
                 .apellido(data.getApellido())
                 .email(data.getEmail())
+                .password(data.getPassword())
                 .documentoIdentidad(data.getDocumentoIdentidad())
                 .telefono(data.getTelefono())
                 .direccion(data.getDireccion())
                 .fechaNacimiento(data.getFechaNacimiento())
                 .idRol(data.getIdRol())
+                .nombreRol(data.getNombreRol())
                 .salarioBase(data.getSalarioBase())
                 .build();
     }
@@ -39,6 +41,7 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
         data.setNombre(model.getNombre());
         data.setApellido(model.getApellido());
         data.setEmail(model.getEmail());
+        data.setPassword(model.getPassword());
         data.setDocumentoIdentidad(model.getDocumentoIdentidad());
         data.setTelefono(model.getTelefono());
         data.setDireccion(model.getDireccion());
@@ -54,7 +57,7 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
         log.trace("[R2DBCRepositoryAdapter] Guardando usuario email={}", usuario.getEmail());
         return Mono.just(usuario)
                 .map(this::toData)
-                .flatMap(r2dbcRepository::save)
+                .flatMap(usuarioDataRepository::save)
                 .map(this::toModel)
                 .doOnSuccess(u -> log.debug("[R2DBCRepositoryAdapter] Usuario guardado id={}, email={}", u.getIdUsuario(), u.getEmail()))
                 .doOnError(e -> log.warn("[R2DBCRepositoryAdapter] Error guardando usuario {}: {}", usuario.getEmail(), e.getMessage(), e))
@@ -64,11 +67,11 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
     @Override
     public Mono<Usuario> findByEmail(String email) {
         log.trace("[R2DBCRepositoryAdapter] Buscando usuario por email={}", email);
-        return r2dbcRepository.findByEmail(email) // Llama al método del repo de Spring
+        return usuarioDataRepository.findByEmailWithRole(email) // Llama al método del repo de Spring
                 .map(this::toModel) // Convierte el resultado al modelo de dominio
                 .doOnSuccess(u -> {
                     if (u != null) {
-                        log.debug("[R2DBCRepositoryAdapter] Usuario encontrado id={}, email={}", u.getIdUsuario(), email);
+                        log.debug("[R2DBCRepositoryAdapter] Usuario encontrado id={}, email={}, rol={}", u.getIdUsuario(), email, u.getNombreRol());
                     } else {
                         log.debug("[R2DBCRepositoryAdapter] No se encontró usuario con email={}", email);
                     }
@@ -79,7 +82,7 @@ public class R2DBCRepositoryAdapter implements UsuarioRepository {
     @Override
     public Mono<Usuario> findByDocumentoIdentidad(String documentoIdentidad) {
         log.trace("[R2DBCRepositoryAdapter] Buscando usuario por documento={}", documentoIdentidad);
-        return r2dbcRepository.findByDocumentoIdentidad(documentoIdentidad) // Llama al método del repo de Spring
+        return usuarioDataRepository.findByDocumentoIdentidad(documentoIdentidad) // Llama al método del repo de Spring
                 .map(this::toModel) // Convierte el resultado al modelo de dominio
                 .doOnSuccess(u -> {
                     if (u != null) {

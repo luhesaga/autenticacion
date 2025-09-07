@@ -3,6 +3,7 @@ package co.com.crediya.autenticacion.api.config;
 import co.com.crediya.autenticacion.api.handler.GlobalExceptionHandler;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @ContextConfiguration(classes = {ConfigTest.TestController.class, GlobalExceptionHandler.class})
-@WebFluxTest
+@WebFluxTest(excludeAutoConfiguration = ReactiveSecurityAutoConfiguration.class)
 @Import({CorsConfig.class, SecurityHeadersConfig.class})
 @TestPropertySource(properties = {
         "cors.allowed-origins=http://localhost"

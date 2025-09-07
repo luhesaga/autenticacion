@@ -2,6 +2,7 @@ package co.com.crediya.autenticacion.usecase.usuario;
 
 import co.com.crediya.autenticacion.model.usuario.Usuario;
 import co.com.crediya.autenticacion.model.usuario.exception.BusinessValidationException;
+import co.com.crediya.autenticacion.model.usuario.gateways.PasswordEncryptionGateway;
 import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
 import co.com.crediya.autenticacion.model.usuario.util.Constants;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +15,7 @@ import java.util.regex.Pattern;
 public class UsuarioUseCase {
 
     private final UsuarioRepository usuarioRepository;
-
-    // Expresión regular para una validación básica de email.
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
-    );
+    private final PasswordEncryptionGateway passwordEncryptionGateway; // Usar la interfaz del dominio
 
     /**
      * Lógica de negocio para registrar un nuevo usuario.
@@ -31,6 +28,10 @@ public class UsuarioUseCase {
                 .flatMap(this::validarFormatoDatos)
                 .flatMap(this::validarEmailNoRegistrado)
                 .flatMap(this::validarDocumentoIdentidad)
+                .map(u -> {
+                    String passwordCodificado = passwordEncryptionGateway.encriptar(u.getPassword());
+                    return u.toBuilder().password(passwordCodificado).build();
+                })
                 .flatMap(usuarioRepository::guardarUsuario);
     }
 
@@ -38,16 +39,20 @@ public class UsuarioUseCase {
         if (Objects.isNull(usuario.getNombre()) || usuario.getNombre().isBlank() || Objects.isNull(usuario.getApellido()) || usuario.getApellido().isBlank() || Objects.isNull(usuario.getEmail()) || usuario.getEmail().isBlank()) {
             return Mono.error(new BusinessValidationException(Constants.ERROR_CAMPOS_OBLIGATORIOS));
         }
+        if (Objects.isNull(usuario.getPassword()) ||
+                !Constants.PASSWORD_COMPLEXITY_PATTERN.matcher(usuario.getPassword()).matches()) {
+            return Mono.error(new BusinessValidationException(Constants.ERROR_PASSWORD_COMPLEJIDAD));
+        }
         return Mono.just(usuario);
     }
 
     private Mono<Usuario> validarFormatoDatos(Usuario usuario) {
         // Validación del formato del email
-        if (!EMAIL_PATTERN.matcher(usuario.getEmail()).matches()) {
+        if (!Constants.EMAIL_PATTERN.matcher(usuario.getEmail()).matches()) {
             return Mono.error(new BusinessValidationException(Constants.ERROR_FORMATO_EMAIL_INVALIDO));
         }
         // Validación del rango del salario
-        if (usuario.getSalarioBase() < 0 || usuario.getSalarioBase() > 15000000) {
+        if (usuario.getSalarioBase() < Constants.SALARIO_MINIMO || usuario.getSalarioBase() > Constants.SALARIO_MAXIMO) {
             return Mono.error(new BusinessValidationException(Constants.ERROR_SALARIO_FUERA_DE_RANGO));
         }
         return Mono.just(usuario);
