@@ -32,7 +32,7 @@ class BCryptAdapterTest {
         when(passwordEncoder.encode(anyString())).thenReturn(passwordEncriptado);
 
         // Act (Actuar)
-        String resultado = bCryptAdapter.encriptar(passwordPlano);
+        String resultado = bCryptAdapter.encryptPassword(passwordPlano);
 
         // Assert
         assertEquals(passwordEncriptado, resultado);

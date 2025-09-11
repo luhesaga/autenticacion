@@ -8,12 +8,12 @@ La funcionalidad principal desarrollada hasta ahora es el **registro de nuevos u
 
 **Funcionalidades Clave:**
 * Exposición de un endpoint `POST` para la creación de usuarios.
-* Recepción de datos personales y de salario del nuevo usuario.
+* Recepción de datos personales y de salario del nuevo user.
 * Validación de la información de entrada, incluyendo:
     * Campos obligatorios (nombre, apellido, email).
     * Formato de datos (email, rangos numéricos).
     * Reglas de negocio (unicidad de email y documento de identidad).
-* Persistencia del nuevo usuario en la base de datos.
+* Persistencia del nuevo user en la base de datos.
 * Manejo de errores controlado y consistente para el cliente de la API.
 
 ---
@@ -78,7 +78,7 @@ El servicio estará disponible en `http://localhost:8080`.
 ### Registrar un Nuevo Usuario
 * **Método:** `POST`
 * **URL:** `/api/v1/usuarios`
-* **Descripción:** Crea un nuevo usuario en el sistema.
+* **Descripción:** Crea un nuevo user en el sistema.
 
 **Ejemplo de Request Body:**
 ```json

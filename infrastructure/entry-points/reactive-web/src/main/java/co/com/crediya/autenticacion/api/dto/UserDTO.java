@@ -11,26 +11,25 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "DTO para la creación de un nuevo usuario en el sistema.")
-public class UsuarioDTO {
-    // No incluimos el id, ya que lo genera la base de datos.
+public class UserDTO {
     @Schema(description = "Nombres del usuario.", example = "Juan Carlos")
-    private String nombre;
+    private String name;
     @Schema(description = "Apellidos del usuario.", example = "Pérez Gómez")
-    private String apellido;
+    private String lastname;
     @Schema(description = "Correo electrónico único del usuario.", example = "juan.perez@example.com")
     private String email;
     @Schema(description = "Contraseña del usuario, al menos 8 caracteres, al menos una mayúscula y un numero", example = "Contraseña2509e")
     private String password;
     @Schema(description = "Documento de identidad del usuario.", example = "1140888999")
-    private String documentoIdentidad;
+    private String documentId;
     @Schema(description = "Número de teléfono de contacto.", example = "3012345678")
-    private String telefono;
+    private String phone;
     @Schema(description = "Dirección de residencia.", example = "Calle 123 25-98")
-    private String direccion;
+    private String address;
     @Schema(description = "Fecha de nacimiento del usuario.", example = "1995-10-20")
-    private LocalDate fechaNacimiento;
+    private LocalDate birthDate;
     @Schema(description = "Identificador del rol asignado.", example = "2")
-    private Long idRol;
+    private Long rolId;
     @Schema(description = "Salario base mensual del usuario.", example = "2500000")
-    private double salarioBase;
+    private double salary;
 }

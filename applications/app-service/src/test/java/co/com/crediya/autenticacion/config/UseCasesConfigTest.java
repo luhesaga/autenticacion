@@ -1,8 +1,8 @@
 package co.com.crediya.autenticacion.config;
 
 import co.com.crediya.autenticacion.model.usuario.gateways.PasswordEncryptionGateway;
-import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
-import co.com.crediya.autenticacion.usecase.usuario.UsuarioUseCase;
+import co.com.crediya.autenticacion.model.usuario.gateways.UserRepository;
+import co.com.crediya.autenticacion.usecase.usuario.UserUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -21,14 +21,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class UseCasesConfigTest {
 
     @Autowired
-    private UsuarioUseCase usuarioUseCase;
+    private UserUseCase userUseCase;
 
     @TestConfiguration
     static class TestConfig {
 
         @Bean
-        public UsuarioRepository usuarioRepository() {
-            return Mockito.mock(UsuarioRepository.class);
+        public UserRepository usuarioRepository() {
+            return Mockito.mock(UserRepository.class);
         }
 
         @Bean
@@ -39,6 +39,6 @@ public class UseCasesConfigTest {
 
     @Test
     void testUseCaseBeansExist() {
-        assertNotNull(usuarioUseCase, "El bean usuarioUseCase no debería ser nulo");
+        assertNotNull(userUseCase, "El bean userUseCase no debería ser nulo");
     }
 }

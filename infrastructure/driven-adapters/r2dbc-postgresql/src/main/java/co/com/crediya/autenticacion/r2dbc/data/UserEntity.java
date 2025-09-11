@@ -12,16 +12,16 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @Table("usuario")
-public class UsuarioData {
+public class UserEntity {
     @Id
-    @Column("id_usuario") // Nombre de la columna PK
-    private Long idUsuario;
+    @Column("id_usuario")
+    private Long id;
 
     @Column("nombre")
-    private String nombre;
+    private String name;
 
     @Column("apellido")
-    private String apellido;
+    private String lastname;
 
     @Column("email")
     private String email;
@@ -30,24 +30,24 @@ public class UsuarioData {
     private String password;
 
     @Column("documento_identidad")
-    private String documentoIdentidad;
+    private String documentId;
 
     @Column("telefono")
-    private String telefono;
+    private String phone;
 
     @Column("direccion")
-    private String direccion;
+    private String address;
 
     @Column("fecha_nacimiento")
-    private LocalDate fechaNacimiento;
+    private LocalDate birthDate;
 
     @Column("id_rol")
-    private Long idRol;
+    private Long rolId;
 
     @Column("salario_base")
-    private double salarioBase;
+    private double salary;
 
     @ReadOnlyProperty
     @Column("nombre_rol")
-    private String nombreRol;
+    private String rolName;
 }

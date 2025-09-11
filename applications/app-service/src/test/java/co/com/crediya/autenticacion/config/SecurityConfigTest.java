@@ -1,8 +1,8 @@
 package co.com.crediya.autenticacion.config;
 
 import co.com.crediya.autenticacion.api.handler.CustomAccessDeniedHandler;
-import co.com.crediya.autenticacion.model.usuario.Usuario;
-import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
+import co.com.crediya.autenticacion.model.usuario.User;
+import co.com.crediya.autenticacion.model.usuario.gateways.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,6 @@ import org.springframework.security.authentication.ReactiveAuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -63,7 +62,7 @@ class SecurityConfigTest {
     ReactiveUserDetailsService userDetailsService;
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    UserRepository userRepository;
 
     @Autowired
     SecurityConfig securityConfig;
@@ -129,13 +128,13 @@ class SecurityConfigTest {
         String encodedPassword = passwordEncoder.encode(rawPassword);
 
         // Prepare repository to return a user with encoded password
-        Usuario usuario = Usuario.builder()
-                .idUsuario(1L)
+        User user = User.builder()
+                .id(1L)
                 .email(email)
                 .password(encodedPassword)
-                .nombreRol("ROLE_ADMIN")
+                .rolName("ROLE_ADMIN")
                 .build();
-        when(usuarioRepository.findByEmail(anyString())).thenReturn(Mono.just(usuario));
+        when(userRepository.findByEmail(anyString())).thenReturn(Mono.just(user));
 
         // Authenticate
         Authentication token = new UsernamePasswordAuthenticationToken(email, rawPassword);
@@ -156,8 +155,8 @@ class SecurityConfigTest {
         }
 
         @Bean
-        UsuarioRepository usuarioRepository() {
-            return Mockito.mock(UsuarioRepository.class);
+        UserRepository usuarioRepository() {
+            return Mockito.mock(UserRepository.class);
         }
     }
 }

@@ -1,6 +1,6 @@
 package co.com.crediya.autenticacion.config;
 
-import co.com.crediya.autenticacion.model.usuario.Usuario;
+import co.com.crediya.autenticacion.model.usuario.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,15 +10,15 @@ import java.util.Collections;
 
 public class UserDetailsImpl implements UserDetails {
 
-    private final Usuario usuario;
-    public UserDetailsImpl(Usuario usuario) { this.usuario = usuario; }
+    private final User user;
+    public UserDetailsImpl(User user) { this.user = user; }
 
-    @Override public String getPassword() { return usuario.getPassword(); }
-    @Override public String getUsername() { return usuario.getEmail(); }
+    @Override public String getPassword() { return user.getPassword(); }
+    @Override public String getUsername() { return user.getEmail(); }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (usuario.getNombreRol() != null && !usuario.getNombreRol().isBlank()) {
-            return Collections.singletonList(new SimpleGrantedAuthority(usuario.getNombreRol()));
+        if (user.getRolName() != null && !user.getRolName().isBlank()) {
+            return Collections.singletonList(new SimpleGrantedAuthority(user.getRolName()));
         }
         return Collections.emptyList();
     }

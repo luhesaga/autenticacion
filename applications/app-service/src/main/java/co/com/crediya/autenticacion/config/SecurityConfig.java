@@ -1,7 +1,7 @@
 package co.com.crediya.autenticacion.config;
 
 import co.com.crediya.autenticacion.api.handler.CustomAccessDeniedHandler;
-import co.com.crediya.autenticacion.model.usuario.gateways.UsuarioRepository;
+import co.com.crediya.autenticacion.model.usuario.gateways.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +39,7 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(auth -> auth
+                        .pathMatchers("/api/v1/usuarios/email/{email}").permitAll()
                         .pathMatchers("/api/v1/usuarios").hasAnyRole("ADMIN", "ASESOR")
                         .pathMatchers("/api/v1/login").permitAll()
                         .pathMatchers("/swagger-ui.html", "/v3/api-docs/**", "/webjars/swagger-ui/**").permitAll()
@@ -59,15 +60,14 @@ public class SecurityConfig {
     @Bean
     public ReactiveJwtDecoder reactiveJwtDecoder(@Value("${jwt.secret}") String secretKey) {
         SecretKey key = new SecretKeySpec(secretKey.getBytes(), "HmacSHA512");
-        // Be explicit about HS512 to match JwtProvider
         return NimbusReactiveJwtDecoder.withSecretKey(key)
                 .macAlgorithm(org.springframework.security.oauth2.jose.jws.MacAlgorithm.HS512)
                 .build();
     }
 
     @Bean
-    public ReactiveUserDetailsService userDetailsService(UsuarioRepository usuarioRepository) {
-        return username -> usuarioRepository.findByEmail(username)
+    public ReactiveUserDetailsService userDetailsService(UserRepository userRepository) {
+        return username -> userRepository.findByEmail(username)
                 .map(UserDetailsImpl::new);
     }
 
@@ -86,7 +86,6 @@ public class SecurityConfig {
 
     private ReactiveJwtAuthenticationConverterAdapter jwtAuthenticationConverter() {
         JwtAuthenticationConverter delegate = new JwtAuthenticationConverter();
-        // Convert custom "roles" claim to authorities, keeping ROLE_ prefix if present
         delegate.setJwtGrantedAuthoritiesConverter(jwt -> {
             Object rolesClaim = jwt.getClaims().get("roles");
             if (rolesClaim instanceof Collection<?>) {
@@ -97,7 +96,6 @@ public class SecurityConfig {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
             }
-            // Fallback to standard scope/authorities conversion if present
             JwtGrantedAuthoritiesConverter scopes = new JwtGrantedAuthoritiesConverter();
             return scopes.convert(jwt);
         });

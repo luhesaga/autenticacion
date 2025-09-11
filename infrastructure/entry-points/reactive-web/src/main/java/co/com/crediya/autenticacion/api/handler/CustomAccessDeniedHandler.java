@@ -1,6 +1,7 @@
 package co.com.crediya.autenticacion.api.handler;
 
-import co.com.crediya.autenticacion.api.dto.ErrorDTO;
+import co.com.crediya.autenticacion.api.dto.ErrorResponseDTO;
+import co.com.crediya.autenticacion.api.error.ApiError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,11 @@ public class CustomAccessDeniedHandler implements ServerAccessDeniedHandler {
         exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        ErrorDTO errorResponse = new ErrorDTO("El usuario no tiene los permisos necesarios para realizar esta acción.");
+        ApiError error = ApiError.ACCESS_DENIED;
+        ErrorResponseDTO errorResponse = ErrorResponseDTO.builder()
+                .code(error.getCode())
+                .message(error.getMessage())
+                .build();
 
         try {
             byte[] responseBytes = objectMapper.writeValueAsString(errorResponse).getBytes(StandardCharsets.UTF_8);

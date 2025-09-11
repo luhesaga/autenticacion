@@ -11,7 +11,7 @@ public class BCryptAdapter implements PasswordEncryptionGateway {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public String encriptar(String passwordPlano) {
+    public String encryptPassword(String passwordPlano) {
         return passwordEncoder.encode(passwordPlano);
     }
 }

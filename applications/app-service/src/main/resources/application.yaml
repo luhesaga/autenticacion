@@ -37,11 +37,14 @@ logging:
     co.com.crediya.autenticacion: TRACE
     org.springframework.r2dbc: DEBUG
     io.r2dbc.postgresql: DEBUG
-#security:
-#  oauth2:
-#    resourceserver:
-#      jwt:
-#        jwk-set-uri: http://localhost:8080/oauth2/jwks
+app:
+  default-admin:
+    email: admin@crediya.com
+    password: AdminPassword123
+    name: Administrador
+    lastname: del Sistema
+    documentId: 1111111
+    rolId: 1
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
 jwt:
