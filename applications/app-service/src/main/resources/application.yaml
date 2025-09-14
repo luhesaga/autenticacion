@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
 spring:
   application:
     name: "autenticacion"
@@ -14,12 +14,12 @@ spring:
   r2dbc:
     # URL de conexión R2DBC para PostgreSQL
     #url: r2dbc:postgresql://localhost:5432/autenticacion_db
-    host: localhost
+    host: ${ADAPTERS_R2DBC_HOST:localhost}
     port: 5432
-    database: autenticacion_db
+    database: ${ADAPTERS_R2DBC_DATABASE:autenticacion_db}
     schema: public
-    username: postgres
-    password: App$2025
+    username: ${ADAPTERS_R2DBC_USERNAME:postgres}
+    password: ${ADAPTERS_R2DBC_PASSWORD:App$2025}
     pool:
       enabled: true
 management:
@@ -48,6 +48,6 @@ app:
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
 jwt:
-  secret: EsteEsUnSecretoSuperLargoYComplejoParaMiAplicacionCrediYaNoCompartir
+  secret: ${JWT_SECRET:EsteEsUnSecretoSuperLargoYComplejoParaMiAplicacionCrediYaNoCompartir}
   expiration:
-    ms: 86400000 # 24 horas
+    ms: ${JWT_EXPIRATION_MS:86400000} # 24 horas
