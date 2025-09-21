@@ -1,8 +1,10 @@
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:8081}
 spring:
   application:
     name: "autenticacion"
+  config:
+    import: "optional:dotenv:.env[.development]"
   devtools:
     add-properties: false
   h2:
@@ -12,12 +14,12 @@ spring:
   profiles:
     include: null
   r2dbc:
-    host: ${ADAPTERS_R2DBC_HOST:crediya-database.c8xu0yg4cj9m.us-east-1.rds.amazonaws.com}
+    host: ${ADAPTERS_R2DBC_HOST}
     port: 5432
-    database: ${ADAPTERS_R2DBC_DATABASE:autenticacion_db}
+    database: ${ADAPTERS_R2DBC_DATABASE}
     schema: public
-    username: ${ADAPTERS_R2DBC_USERNAME:postgres}
-    password: ${ADAPTERS_R2DBC_PASSWORD:App$2025}
+    username: ${ADAPTERS_R2DBC_USERNAME}
+    password: ${ADAPTERS_R2DBC_PASSWORD}
     ssl: true
     ssl-mode: require
     pool:
@@ -48,6 +50,6 @@ app:
 cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
 jwt:
-  secret: ${JWT_SECRET:EsteEsUnSecretoSuperLargoYComplejoParaMiAplicacionCrediYaNoCompartir}
+  secret: ${JWT_SECRET}
   expiration:
-    ms: ${JWT_EXPIRATION_MS:86400000} # 24 horas
+    ms: ${JWT_EXPIRATION_MS} # 24 horas
